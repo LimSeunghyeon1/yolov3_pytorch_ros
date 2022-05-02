@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from __future__ import division
 
 # Python imports
@@ -27,7 +26,8 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torch.autograd import Variable
-
+#print(package_path+"src/yolov3_pytorch_ros/")
+sys.path.append(package_path+"/src/yolov3_pytorch_ros/")
 from models.models import Darknet
 from utils.utils import *
 from yolov3_pytorch_ros.msg import BoundingBoxes, BoundingBox
@@ -155,7 +155,12 @@ class DetectorManager():
             if (self.publish_image):
                 self.visualizeAndPublish(detection_results, self.cv_image)
         else:
-            rospy.loginfo("No detections available, next image")
+            rospy.loginfo("No detections available, next image, hi qq")
+            imgOut = np.ascontiguousarray(self.cv_image)
+            #print(self.cv_image)
+            #imgOut = cv2.resize(imgOut,(640,320))
+            cv2.imshow('hi', self.cv_image)
+            cv2.waitKey(1)
         return True
     
 
@@ -222,6 +227,8 @@ class DetectorManager():
             cv2.rectangle(imgOut, start_point, end_point, lineColor, thickness)
             text = ('{:s}: {:.3f}').format(label,confidence)
             cv2.putText(imgOut, text, (int(x_p1), int(y_p1+20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
+            cv2.imshow("hi",imgOut)
+            cv2.waitKey(1)
 
         # Publish visualization image
         image_msg = self.bridge.cv2_to_imgmsg(imgOut, "rgb8")
